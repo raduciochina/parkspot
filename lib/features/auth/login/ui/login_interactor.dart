@@ -1,0 +1,3 @@
+class LoginInteractor {
+  void loginWithGoogle() {}
+}
