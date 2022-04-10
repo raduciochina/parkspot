@@ -8,7 +8,6 @@ import 'register/ui/registration_page.dart';
 GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class LoginRoutes {
-  // static const String loginRoot = 'login/language';
   static const String loginPage = 'login/login';
   static const String registration = 'login/registration';
   static const String verification = 'login/verification';
@@ -33,9 +32,6 @@ class LoginNavigator extends StatelessWidget {
         onGenerateRoute: (RouteSettings settings) {
           late WidgetBuilder builder;
           switch (settings.name) {
-            // case LoginRoutes.loginRoot:
-            //  builder = (BuildContext _) => Settings(true);
-            //   break;
             case LoginRoutes.loginPage:
               builder = (BuildContext _) => const LoginPage();
               break;

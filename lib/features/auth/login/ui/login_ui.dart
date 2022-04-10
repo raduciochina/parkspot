@@ -1,18 +1,12 @@
 import 'package:animation_wrappers/animation_wrappers.dart';
 import 'package:flutter/material.dart';
 import 'package:parkspot/app_config/colors.dart';
-import 'package:parkspot/features/app_navigation/ui/app_navigation.dart';
-import 'package:parkspot/features/profile/ui/my_profile.dart';
 import 'package:parkspot/generated/l10n.dart';
 import 'package:parkspot/routes/routes.dart';
-import 'package:provider/provider.dart';
-import 'login_interactor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginUI extends StatefulWidget {
-  final LoginInteractor loginInteractor;
-
-  const LoginUI(this.loginInteractor, {Key? key}) : super(key: key);
+  const LoginUI({Key? key}) : super(key: key);
 
   @override
   _LoginUIState createState() => _LoginUIState();
@@ -31,6 +25,7 @@ class _LoginUIState extends State<LoginUI> {
       });
       if (_currentUser != null) {
         print(_currentUser?.displayName);
+        Navigator.pushNamed(context, PageRoutes.addAddress);
       } else {
         _googleSignIn.signInSilently();
       }
@@ -46,85 +41,81 @@ class _LoginUIState extends State<LoginUI> {
   @override
   Widget build(BuildContext context) {
     var locale = S.of(context);
-    if (_currentUser == null) {
-      return Scaffold(
-        body: FadedSlideAnimation(
-          child: SingleChildScrollView(
-              child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(children: [
-                    const Spacer(),
-                    Stack(
-                      children: [
-                        Column(
-                          children: [
-                            Container(
-                              height: 50,
-                              color: backgroundColor,
-                            ),
-                            Image.asset("assets/img_sign.png"),
-                          ],
-                        ),
-                        PositionedDirectional(
-                          top: 0,
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Image.asset("assets/logo1.png", scale: 3),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: MediaQuery.of(context).size.height / 2,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(20),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Scaffold(
+      body: FadedSlideAnimation(
+        child: SingleChildScrollView(
+            child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Column(children: [
+                  const Spacer(),
+                  Stack(
+                    children: [
+                      Column(
                         children: [
-                          const Spacer(),
-                          Text(
-                            locale.signInNow,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle1!
-                                .copyWith(
-                                    color: Theme.of(context).hintColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500),
-                          ),
-                          const Spacer(),
                           Container(
-                            height: 70,
-                            margin: EdgeInsets.all(15),
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: const BorderRadius.vertical(
-                                  top: Radius.circular(20),
-                                  bottom: Radius.circular(20)),
-                            ),
-                            child: socialButton(
-                                context, 'assets/ic_google.png', locale.google),
+                            height: 50,
+                            color: backgroundColor,
                           ),
-                          const Spacer(),
+                          Image.asset("assets/img_sign.png"),
                         ],
                       ),
+                      PositionedDirectional(
+                        top: 0,
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                          child: Image.asset("assets/logo1.png", scale: 3),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height / 2,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
                     ),
-                  ]))),
-          beginOffset: const Offset(0, 0.3),
-          endOffset: const Offset(0, 0),
-          slideCurve: Curves.linearToEaseOut,
-        ),
-      );
-    } else {
-      return const AppNavigation(currentIndex: 0);
-    }
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const Spacer(),
+                        Text(
+                          locale.signInNow,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1!
+                              .copyWith(
+                                  color: Theme.of(context).hintColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500),
+                        ),
+                        const Spacer(),
+                        Container(
+                          height: 70,
+                          margin: EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(20),
+                                bottom: Radius.circular(20)),
+                          ),
+                          child: socialButton(
+                              context, 'assets/ic_google.png', locale.google),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
+                  ),
+                ]))),
+        beginOffset: const Offset(0, 0.3),
+        endOffset: const Offset(0, 0),
+        slideCurve: Curves.linearToEaseOut,
+      ),
+    );
   }
 }
 
@@ -136,8 +127,8 @@ TextButton socialButton(BuildContext context, String icon, String text) {
       size: 20,
     ),
     onPressed: () async {
-      Provider.of(context, listen: false);
       await _handleSignIn(context);
+      Navigator.pushNamed(context, PageRoutes.addAddress);
     },
     label: Text(
       text,
@@ -159,8 +150,6 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 Future<void> _handleSignIn(BuildContext context) async {
   try {
     await _googleSignIn.signIn();
-    Navigator.pushNamed(context, PageRoutes.myProfile);
-    print("Logged in");
   } catch (error) {
     print(error);
   }
